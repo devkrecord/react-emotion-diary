@@ -15,6 +15,23 @@ import RouteTest from './components/RouteTest';
   마치 페이지가 이동한것처럼 보이게 함 ( CSR(Client Side Rendering) 방식 사용 - 페이지 전환 시 깜빡임 없고 , 이동 속도가 매우 빨라 쾌적하다 )
 */
 
+/*
+
+  🥸 React Router Dom의 유용한 기능
+  REACT ROUTER V6
+  : REACT에서 CSR기반의 페이지 라우팅을 할 수 있게 해주는 라티브러리
+
+  1. Path Variable
+      useParams
+
+  2.Query String : 웹 페이지에 데이터를 전달하는 가장 간단한 방법
+     useSearchParams
+
+  3.Page Moving
+      useNavigate
+
+*/
+
 function App() {
   return (
     <BrowserRouter>
@@ -25,7 +42,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/new" element={<New />} />
           <Route path="/edit" element={<Edit />} />
-          <Route path="/diary" element={<Diary />} />
+          <Route path="/diary/:id" element={<Diary />} />
         </Routes>
         {/* a 태그를 이용하면 이동할 때 페이지를 새로고침한다. 이것은 spa가 아닌 mpa 특징 */}
         {/* spa의 장점인 빠른 페이지 이동, 쾌적한 사용자 경험 불가  */}
