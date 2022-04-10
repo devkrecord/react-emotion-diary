@@ -6,7 +6,11 @@ import New from './pages/New';
 import Edit from './pages/Edit';
 import Diary from './pages/Diary';
 
-import RouteTest from './components/RouteTest';
+// components
+import MyButton from './components/MyButton';
+import MyHeader from './components/MyHeader';
+
+// import RouteTest from './components/RouteTest';
 
 /* 
   리액트에서 제공하는 html 파일은 public 폴더의 index.html 하나지만
@@ -36,7 +40,34 @@ function App() {
   return (
     <BrowserRouter>
       <div className="App">
+        <MyHeader
+          headText={'App'}
+          leftChild={
+            <MyButton text={'왼쪽 버튼'} onClick={() => alert('left click')} />
+          }
+          rightChild={
+            <MyButton
+              text={'오른쪽 버튼'}
+              onClick={() => alert('right click')}
+            />
+          }
+        />
         <h2>App.js</h2>
+        <MyButton
+          text={'버튼'}
+          onClick={() => alert('button click')}
+          type={'positive'}
+        />
+        <MyButton
+          text={'버튼'}
+          onClick={() => alert('button click')}
+          type={'negative'}
+        />
+        <MyButton
+          text={'버튼'}
+          onClick={() => alert('button click')}
+          type={'sdfsdf'}
+        />
         <Routes>
           {/* <Route />는 url 경로와 컴포넌트를 매핑 시켜주는 컴포넌트 */}
           <Route path="/" element={<Home />} />
@@ -47,7 +78,7 @@ function App() {
         {/* a 태그를 이용하면 이동할 때 페이지를 새로고침한다. 이것은 spa가 아닌 mpa 특징 */}
         {/* spa의 장점인 빠른 페이지 이동, 쾌적한 사용자 경험 불가  */}
         {/* <a href={'/new'}>New로 이동</a> */}
-        <RouteTest />
+        {/* <RouteTest /> */}
       </div>
     </BrowserRouter>
   );
