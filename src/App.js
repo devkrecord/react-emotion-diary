@@ -1,3 +1,5 @@
+import React, { useReducer, useRef } from 'react';
+
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'; // 1. 브라우저 url과 리액트 앱을 연동해주는 기능을 하는 컴포넌트
 
@@ -7,8 +9,8 @@ import Edit from './pages/Edit';
 import Diary from './pages/Diary';
 
 // components
-import MyButton from './components/MyButton';
-import MyHeader from './components/MyHeader';
+// import MyButton from './components/MyButton';
+// import MyHeader from './components/MyHeader';
 
 // import RouteTest from './components/RouteTest';
 
@@ -36,11 +38,80 @@ import MyHeader from './components/MyHeader';
 
 */
 
+const reducer = (state, action) => {
+  let newState = [];
+  switch (action.type) {
+    case 'INIT': {
+      return action.data;
+    }
+    case 'CREATE': {
+      newState = [...action.data, ...state];
+      break;
+    }
+    case 'REMOVE': {
+      newState = state.filter((it) => it.id !== action.targetId);
+      break;
+    }
+    case 'EDIT': {
+      newState = state.map((it) =>
+        it.id === action.data.id ? { ...action.data } : it
+      );
+      break;
+    }
+    default:
+      return state;
+  }
+};
+
+export const DiaryStateContext = React.createContext();
+export const DiaryDispatchContext = React.createContext();
+
 function App() {
+  const [data, dispatch] = useReducer(reducer, []);
+
+  const dataId = useRef(0);
+
+  // CREATE
+  const onCreate = (date, content, emotion) => {
+    dispatch({
+      type: 'CREATE',
+      data: {
+        id: dataId.current,
+        data: new Date(date).getTime(),
+        content,
+        emotion,
+      },
+    });
+    dataId.current += 1;
+  };
+
+  //REMOVE
+  const onRemove = (targetId) => {
+    dispatch({
+      type: 'REMOVE',
+      targetId,
+    });
+  };
+
+  // EDIT
+  const onEdit = (targetId, date, content, emotion) => {
+    dispatch({
+      type: 'EDIT',
+      data: {
+        id: targetId,
+        data: new Date(date).getTime(),
+        content,
+        emotion,
+      },
+    });
+  };
+
   return (
-    <BrowserRouter>
-      <div className="App">
-        <MyHeader
+    <DiaryStateContext.Provider value={data}>
+      <DiaryDispatchContext.Provider value={{ onCreate, onEdit, onRemove }}>
+        <BrowserRouter>
+          <div className="App">
+            {/* <MyHeader
           headText={'App'}
           leftChild={
             <MyButton text={'왼쪽 버튼'} onClick={() => alert('left click')} />
@@ -57,7 +128,7 @@ function App() {
           text={'버튼'}
           onClick={() => alert('button click')}
           type={'positive'}
-        />
+        />zzx
         <MyButton
           text={'버튼'}
           onClick={() => alert('button click')}
@@ -67,20 +138,22 @@ function App() {
           text={'버튼'}
           onClick={() => alert('button click')}
           type={'sdfsdf'}
-        />
-        <Routes>
-          {/* <Route />는 url 경로와 컴포넌트를 매핑 시켜주는 컴포넌트 */}
-          <Route path="/" element={<Home />} />
-          <Route path="/new" element={<New />} />
-          <Route path="/edit" element={<Edit />} />
-          <Route path="/diary/:id" element={<Diary />} />
-        </Routes>
-        {/* a 태그를 이용하면 이동할 때 페이지를 새로고침한다. 이것은 spa가 아닌 mpa 특징 */}
-        {/* spa의 장점인 빠른 페이지 이동, 쾌적한 사용자 경험 불가  */}
-        {/* <a href={'/new'}>New로 이동</a> */}
-        {/* <RouteTest /> */}
-      </div>
-    </BrowserRouter>
+        /> */}
+            <Routes>
+              {/* <Route />는 url 경로와 컴포넌트를 매핑 시켜주는 컴포넌트 */}
+              <Route path="/" element={<Home />} />
+              <Route path="/new" element={<New />} />
+              <Route path="/edit" element={<Edit />} />
+              <Route path="/diary/:id" element={<Diary />} />
+            </Routes>
+            {/* a 태그를 이용하면 이동할 때 페이지를 새로고침한다. 이것은 spa가 아닌 mpa 특징 */}
+            {/* spa의 장점인 빠른 페이지 이동, 쾌적한 사용자 경험 불가  */}
+            {/* <a href={'/new'}>New로 이동</a> */}
+            {/* <RouteTest /> */}
+          </div>
+        </BrowserRouter>
+      </DiaryDispatchContext.Provider>
+    </DiaryStateContext.Provider>
   );
 }
 
